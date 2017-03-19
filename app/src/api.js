@@ -7,6 +7,8 @@ module.exports = function(app){
     app.get('/api/connect', connect)
     app.get('/api/token', token)
     app.post('/api/newEvent', newEvent)
+    app.get('/api/generateimage', generateImage)
+    app.get('/api/getdevices', getdevices)
 }
 
 // Connect to the "bank" database.
@@ -46,8 +48,21 @@ function newEvent(req, res){
   });
 }
 
+function getdevices(req, res) {
+  console.log("GET DEVICES");
+  console.log(req.body);
+  res.send("respon");
+}
+
+function generateImage(req, res) {
+  console.log("generate image");
+  console.log(req.body);
+  res.send("respon");
+}
+
 function token(req, res){
   res.send(req.cookies.id_token);
+}
 
 
 function connect(req, res){
