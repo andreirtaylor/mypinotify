@@ -109,45 +109,66 @@ function getmyevents(req, res) {
     });
   });
 }
-var assCount = 0;
 
-function sendText(req){
-  client.query("SELECT phone, timeout FROM devices WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
-    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-    if(err){
-      console.error(err);
-      return;
+function sendText(req, event){
+  console.log(event)
+
+  pool.connect(function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
     }
-    done(err);
 
-    console.log(result)
-    // Pass in parameters to the REST API using an object literal notation. The
-    // REST client will handle authentication and response serialzation for you.
-    twilioClient.sms.messages.create({
-      to:'12508961067',
-      from:'17784003915',
-      body:'ahoy hoy! Testing Twilio and node.js'
-    }, function(error, message) {
-      // The HTTP request to Twilio will run asynchronously. This callback
-      // function will be called when a response is received from Twilio
-      // The "error" variable will contain error information, if any.
-      // If the request was successful, this value will be "falsy"
-      if (!error) {
-        // The second argument to the callback will contain the information
-        // sent back by Twilio for the request. In this case, it is the
-        // information about the text messsage you just sent:
-        console.log('Success! The SID for this SMS message is:');
-        console.log(message.sid);
-
-        console.log('Message sent on:');
-        console.log(message.dateCreated);
-      } else {
-        console.log('Oops! There was an error.' + JSON.stringify(error));
+    // get the device phone number if it exists
+    client.query("SELECT * FROM devices WHERE device = $1", [event.device], function(err, result) {
+      if(err){
+        console.error(err);
+        return;
       }
-    });
+      console.log("fuck", result)
+      if(result.rows.length == 0 || ! result.rows[0].phone || Math.floor(Date.now() / 1000) < result.rows[0].timeout){
+        return;
+      }
+      var phone = result.rows[0].phone
 
+      // wait 30 seconds to notify again
+      client.query("UPDATE mypinotify.devices SET timeout = $1 where device = $2", [ Math.floor(Date.now() / 1000) + 30 , event.device], function(err, result) {
+
+        if(err){
+          console.error(err);
+          return;
+        }
+        done(err);
+        console.log("fuck", result)
+
+        // Pass in parameters to the REST API using an object literal notation. The
+        // REST client will handle authentication and response serialzation for you.
+        twilioClient.sms.messages.create({
+          to: phone,
+          from:'17784003915',
+          body:'You got a alert from ' + event.device
+        }, function(error, message) {
+          // The HTTP request to Twilio will run asynchronously. This callback
+          // function will be called when a response is received from Twilio
+          // The "error" variable will contain error information, if any.
+          // If the request was successful, this value will be "falsy"
+          if (!error) {
+            // The second argument to the callback will contain the information
+            // sent back by Twilio for the request. In this case, it is the
+            // information about the text messsage you just sent:
+            console.log('Success! The SID for this SMS message is:');
+            console.log(message.sid);
+
+            console.log('Message sent on:');
+            console.log(message.dateCreated);
+          } else {
+            console.log('Oops! There was an error.' + JSON.stringify(error));
+          }
+        });
+
+      });
+    });
   });
-};
+}
 
 function getlatestevent(req, res) {
   pool.connect(function(err, client, done) {
@@ -156,7 +177,7 @@ function getlatestevent(req, res) {
     }
 
     client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
-    //client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+      //client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       let ret = result.rows;
       if(err){
@@ -164,7 +185,7 @@ function getlatestevent(req, res) {
         return;
       }
       client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
-      //client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+        //client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
         //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
         if(err){
           console.error(err);
@@ -174,11 +195,9 @@ function getlatestevent(req, res) {
 
         res.setHeader("content-type", "text/plain");
 
-        // let formatted = ret.map((val) =>{
-        //   let data = JSON.parse(val.message)
-        //   return data.ultrasonic + "  " + data.touch;
-        // })
-        // console.log(formatted);
+        ret.forEach((val) =>{
+          sendText(req, val)
+        })
         res.send(ret);
       });
     });
