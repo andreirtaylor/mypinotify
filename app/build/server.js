@@ -304,7 +304,7 @@ module.exports = require("isomorphic-style-loader/lib/withStyles");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Layout_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Layout_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Header__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Footer__ = __webpack_require__(18);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/components/Layout/Layout.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/components/Layout/Layout.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -399,8 +399,8 @@ const auth = {
 
   // https://developers.facebook.com/
   facebook: {
-    id: process.env.FACEBOOK_APP_ID || '186244551745631',
-    secret: process.env.FACEBOOK_APP_SECRET || 'a970ae3240ab4b9b8aae0f9f0661c6fc'
+    id: process.env.FACEBOOK_APP_ID || '1254362078010282',
+    secret: process.env.FACEBOOK_APP_SECRET || 'a9981c1eb18a262240ecdd4e33429ac3'
   },
 
   // https://cloud.google.com/console/project
@@ -469,7 +469,7 @@ module.exports = require("graphql");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_history__ = __webpack_require__(22);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/components/Link/Link.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/components/Link/Link.js';
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
@@ -553,7 +553,7 @@ Link.defaultProps = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Page_css__ = __webpack_require__(67);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Page_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Page_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/components/Page/Page.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/components/Page/Page.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -798,7 +798,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__assets_json__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__assets_json___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_19__assets_json__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__config__ = __webpack_require__(5);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/server.js',
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/server.js',
     _this = this;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -1011,6 +1011,8 @@ var pg = __webpack_require__(93);
 
 module.exports = function (app) {
   app.get('/api/events', getAllEvents);
+  app.get('/api/connect', connect);
+  app.get('/api/token', token);
 };
 
 // Connect to the "bank" database.
@@ -1026,6 +1028,38 @@ var config = {
 //and set a limit of maximum 10 idle clients
 pool = new pg.Pool(config);
 
+function token(req, res) {
+  res.send(req.cookies.id_token);
+}
+
+function connect(req, res) {
+  // to run a query we can acquire a client from the pool,
+  // run a query on the client, and then return the client to the pool
+  pool.connect(function (err, client, done) {
+    if (err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('SELECT * FROM events', function (err, result) {
+      //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+      done(err);
+
+      if (err) {
+        return console.error('error running query', err);
+      }
+      res.send(result.rows);
+    });
+  });
+
+  pool.on('error', function (err, client) {
+    // if an error is encountered by a client while it sits idle in the pool
+    // the pool itself will emit an error event with both the error and
+    // the client which emitted the original error
+    // this is a rare occurrence but can happen if there is a network partition
+    // between your application and the database, the database restarts, etc.
+    // and so you might want to handle it and at least log it out
+    console.error('idle client error', err.message, err.stack);
+  });
+}
 function getAllEvents(req, res) {
   // to run a query we can acquire a client from the pool,
   // run a query on the client, and then return the client to the pool
@@ -1133,7 +1167,7 @@ App.childContextTypes = ContextType;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Footer_css__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Footer_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Footer_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/components/Footer/Footer.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/components/Footer/Footer.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -1181,7 +1215,7 @@ class Footer extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__logo_small_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__logo_small_png__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__logo_small_2x_png__ = __webpack_require__(62);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__logo_small_2x_png___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__logo_small_2x_png__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/components/Header/Header.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/components/Header/Header.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -1224,7 +1258,7 @@ class Header extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__config__ = __webpack_require__(5);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/components/Html.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/components/Html.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -1386,7 +1420,7 @@ Html.defaultProps = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Navigation_css__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Navigation_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Navigation_css__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Link__ = __webpack_require__(9);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/components/Navigation/Navigation.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/components/Navigation/Navigation.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -1991,7 +2025,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Page__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/about/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/about/index.js';
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -2058,7 +2092,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Admin_css__ = __webpack_require__(68);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Admin_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Admin_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/admin/Admin.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/admin/Admin.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -2132,7 +2166,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Layout__ = __webpack_require__(4);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/admin/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/admin/index.js';
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -2203,7 +2237,7 @@ const isAdmin = false;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Contact_css__ = __webpack_require__(69);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Contact_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Contact_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/contact/Contact.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/contact/Contact.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -2278,7 +2312,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Layout__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Contact__ = __webpack_require__(36);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/contact/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/contact/index.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -2334,7 +2368,7 @@ const title = 'Contact Us';
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ErrorPage_css__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ErrorPage_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__ErrorPage_css__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ErrorPage; });
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/error/ErrorPage.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/error/ErrorPage.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -2454,7 +2488,7 @@ ErrorPage.propTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Home_css__ = __webpack_require__(70);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Home_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Home_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/home/Home.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/home/Home.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -2504,7 +2538,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Home__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_fetch__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Layout__ = __webpack_require__(4);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/home/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/home/index.js';
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -2622,7 +2656,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Login_css__ = __webpack_require__(71);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Login_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Login_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/login/Login.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/login/Login.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -2951,7 +2985,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Layout__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Login__ = __webpack_require__(42);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/login/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/login/index.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -3006,7 +3040,7 @@ const title = 'Log In';
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__NotFound_css__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__NotFound_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__NotFound_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/notFound/NotFound.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/notFound/NotFound.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -3081,7 +3115,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Layout__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__NotFound__ = __webpack_require__(44);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/notFound/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/notFound/index.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -3138,7 +3172,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Page__ = __webpack_require__(10);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/privacy/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/privacy/index.js';
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -3204,7 +3238,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_isomorphic_style_loader_lib_withStyles__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Register_css__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Register_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Register_css__);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/register/Register.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/register/Register.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
@@ -3279,7 +3313,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Layout__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Register__ = __webpack_require__(47);
-var _jsxFileName = '/home/andrei/github/mypinotify/frontend/src/routes/register/index.js';
+var _jsxFileName = '/home/andrei/github/mypinotify/app/src/routes/register/index.js';
 /**
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
