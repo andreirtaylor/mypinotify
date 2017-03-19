@@ -10,6 +10,7 @@ module.exports = function(app){
     app.get('/api/generateimage', generateImage)
     app.get('/api/getdevices', getdevices)
     app.get('/api/getmyevents', getmyevents)
+    app.get('/api/getlatestevent', getlatestevent)
 }
 
 // Connect to the "bank" database.
@@ -68,6 +69,12 @@ function getmyevents(req, res) {
       res.send(result.rows);
     });
   });
+}
+var assCount = 0;
+
+function getlatestevent(req, res) {
+  res.send("ass" + assCount);
+  assCount += 1;
 }
 
 function getdevices(req, res) {
