@@ -18,28 +18,53 @@ let userToken = null;
 class DeviceList extends React.Component {
   componentDidMount() {
     fetch('/api/getdevices', {
-      method: "get"
-    })
+      method: "get",
+    });
   }
   render() {
     return (
       <div> Hello </div>
-    )
+    );
+  }
+}
+
+class EventList extends React.Component {
+  state = {
+    eventList: [],
+  }
+  componentDidMount() {
+    setInterval(function() {
+      fetch('/api/getlatestevent', {
+        method: "post",
+        body: userToken 
+      }).then(function(response) {
+        this.setState({ eventList: this.state.eventList.concat([response]) });
+      });
+    }, 1000);
+  }
+  render() {
+    return (
+      <div>
+        {this.state.map((elem) => {
+          return (<div>{elem}</div>);
+        })}
+      </div>
+    );
   }
 }
 
 class GenerateForm extends React.Component {
   state = {
-    generating: false
+    generating: false,
   }
   render() {
     return (
       <div>
-          <textarea placeholder="SSID" />
-          <textarea placeholder="Password"/>
-          <button onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
+        <textarea placeholder="SSID" />
+        <textarea placeholder="Password"/>
+        <button onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
       </div>
-    )
+    );
   }
 }
 
@@ -86,13 +111,13 @@ class Layout extends React.Component {
     return (
       <div>
         <Header />
-        {this.state.isLoggedIn ? 
+        {this.state.isLoggedIn ?
           <div>
             <GenerateForm />
             <DeviceList />
+            <EventList />
           </div>
-        : 
-          <button onClick={this.logIn}> Login </button>  
+        : <button onClick={this.logIn}> Login </button>
           }
         <Footer />
       </div>
