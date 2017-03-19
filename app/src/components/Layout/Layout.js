@@ -18,11 +18,22 @@ class Layout extends React.Component {
     children: PropTypes.node.isRequired,
   };
 
+  logOut = () => {
+    console.log("NOT IMPLEMENTED");
+  }
+
+  logIn = () => {
+    window.location.href = '/login/facebook';
+  }
+
   render() {
+    const isLoggedIn = false;
     return (
       <div>
         <Header />
-        Content
+        {isLoggedIn ? 
+        <button onClick={this.logOut}> Logout </button>
+        : <button onClick={this.logIn}> Login </button> }
         <Footer />
       </div>
     );
