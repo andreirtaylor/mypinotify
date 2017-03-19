@@ -12,7 +12,7 @@ module.exports = function(app){
   app.get('/api/connect', connect)
   app.get('/api/token', token)
   app.post('/api/newEvent', newEvent)
-  app.get('/api/generateimage', generateImage)
+  app.post('/api/generateimage', generateImage)
   app.get('/api/getdevices', getdevices)
   app.get('/api/getmyevents', getmyevents)
   app.get('/api/getlatestevent', getlatestevent)
@@ -168,6 +168,7 @@ function getdevices(req, res) {
 function generateImage(req, res) {
   console.log("generate image");
   console.log(req.body);
+  console.log(req.body.ssid);
   res.send("respon");
 }
 

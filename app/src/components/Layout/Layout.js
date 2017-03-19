@@ -79,27 +79,17 @@ class EventList extends React.Component {
             if (result.length > 0) {
               this.setState({ eventList: result.concat(this.state.eventList) });
             }
-            console.log(xmlHttp.responseText);
-            //this.setState({ eventList: [...JSON.parse(xmlHttp.responseText)].concat(this.state.eventList) });
-            //push the file to the user
           }
       }.bind(this);
       xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
-      //xmlHttp.open("GET", '/api/getmyevents'); // true for asynchronous
       xmlHttp.send(null); // send data HERE!
-      // fetch('/api/getlatestevent', {
-      //   method: "post",
-      //   body: userToken
-      // }).then(function(response) {
-      //this.setState({ eventList: this.state.eventList.concat([response]) }).bind(this);
-      // });
     }.bind(this), 1000);
   }
   render() {
     return (
       <div>
-        {this.state.eventList.map((elem) => {
-          return (<div>{elem.message}</div>);
+        {this.state.eventList.map((elem, index) => {
+          return (<div key={index}>{elem.message}</div>);
         })}
       </div>
     );
@@ -109,7 +99,7 @@ class EventList extends React.Component {
 class GenerateForm extends React.Component {
   state = {
     generating: false,
-    username: "",
+    ssid: "",
     password: "",
   }
   generateRaspbian = () => {
@@ -120,12 +110,13 @@ class GenerateForm extends React.Component {
         }
     }
     xmlHttp.open("POST", '/api/generateimage', true); // true for asynchronous
-    xmlHttp.send(`user=${this.state.username}&pass=${this.state.password}`); // send data HERE!
+    xmlHttp.setRequestHeader("Content-Type", "application/json");
+    xmlHttp.send(JSON.stringify({ ssid: this.state.ssid, pass: this.state.password })); // send data HERE!
   }
   render() {
     return (
       <div className={s.inputContainer}>
-        <input className={s.input} value={this.state.username} placeholder="SSID" onChange={event => this.setState({ username: event.target.value })} />
+        <input className={s.input} value={this.state.ssid} placeholder="SSID" onChange={event => this.setState({ ssid: event.target.value })} />
         <input className={s.input} value={this.state.password} placeholder="Password" onChange={event => this.setState({ password: event.target.value })} />
         <button className={s.logIn} onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
       </div>
