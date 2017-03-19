@@ -18,7 +18,6 @@ class Layout extends React.Component {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = () => { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            console.log(xmlHttp.responseText)
             this.setState({isLoggedIn: xmlHttp.responseText !== ""});
     }
     xmlHttp.open("GET", '/api/token', true); // true for asynchronous 
