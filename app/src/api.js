@@ -1,8 +1,10 @@
 var pg = require('pg');
+var sha1 = require('sha1');
+var str = require('string-to-stream');
 
 module.exports = function(app){
     app.get('/api/events', getAllEvents)
-    app.post('/api/connect', connect)
+    app.get('/api/connect', connect)
     app.get('/api/token', token)
     app.post('/api/newEvent', newEvent)
 }
@@ -27,8 +29,10 @@ function newEvent(req, res){
     if(err) {
       return console.error('error fetching client from pool', err);
     }
-    client.query('INSERT INTO events(message, device) VALUES($1, $2)', 
-      [req.body.pi_id, req.body.ultrasonic], function(err, result) {
+
+    // generate a hopefully new id yolo brolo
+    client.query('INSERT INTO events(message, device) VALUES($2, $1)',
+      [req.body.pi_id, req.body.ultrasonic || req.body.touch], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       done(err);
 
@@ -38,10 +42,6 @@ function newEvent(req, res){
       res.send(result.rows);
     });
   });
-  console.log(req.body.pi_id)
-  console.log()
-  console.log(req.body.touch)
-  //res.send("ok")
 }
 
 function token(req, res){
@@ -55,14 +55,22 @@ function connect(req, res){
     if(err) {
       return console.error('error fetching client from pool', err);
     }
-    client.query('INSERT VALUES INTO ', function(err, result) {
+
+    if(req.cookies.id_token) {
+      return console.error('error fetching client from pool', err);
+    }
+    var device = sha1((new Date()).toString());
+    ///console.log(device);
+    client.query('INSERT INTO devices(device, userToken) VALUES($1, $2)',
+      [device, req.cookies.id_token], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+      if(err){
+        console.error(err);
+      }
       done(err);
 
-      if(err) {
-        return console.error('error running query', err);
-      }
-      res.send(result.rows);
+      res.setHeader("content-type", "text/plain");
+      str(device).pipe(res);
     });
   });
 
