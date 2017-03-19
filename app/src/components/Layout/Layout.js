@@ -36,32 +36,6 @@ class DeviceList extends React.Component {
   render() {
     return (
       <div>
-        <table>
-          <thead>
-            <tr>
-              <th>Integration</th>
-              <th>Device</th>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-          // TODO: For each device notifications loop through this body.
-            <tr>
-              <th>
-                Blah
-              </th>
-              <th>
-                <div> {this.state.devices.map((elem) => {
-                  return (<div>{elem}</div>);
-                })}
-                </div>
-              </th>
-              <th>
-                Blah
-              </th>
-            </tr>
-          </tbody>
-        </table>
       </div>
     );
   }
@@ -89,9 +63,28 @@ class EventList extends React.Component {
   render() {
     return (
       <div>
-        {this.state.eventList.map((elem, index) => {
-          return (<div key={index}>{elem.message}</div>);
-        })}
+      <table>
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>Messages</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              {this.state.eventList.map((elem, index) => {
+                return (<div key={index}>{elem.device}</div>);
+              })}
+            </td>
+            <td>
+              {this.state.eventList.map((elem, index) => {
+                return (<div key={index}>{elem.message}</div>);
+              })}
+            </td>
+          </tr>
+        </tbody>
+      </table>
       </div>
     );
   }
