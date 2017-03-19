@@ -187,6 +187,24 @@ section.success {
     padding-top: 75px;
   }
 }
+#team .team-member {
+  margin: 0 0 15px;
+  right: 0;
+}
+#team .team-member {
+  display: block;
+  position: relative;
+  max-width: 400px;
+  margin: 0 auto;
+}
+#team * {
+  z-index: 2;
+}
+@media (min-width: 767px) {
+  #team .team-member {
+    margin: 0 0 30px;
+  }
+}
 .floating-label-form-group {
   position: relative;
   margin-bottom: 0;
@@ -401,4 +419,16 @@ fieldset[disabled] .btn-success.active {
 }
 div#maincontent {
   outline: none;
+}
+.pageTitle {
+  text-transform: capitalize;
+}
+.heightTitle {
+  height: 5em;
+}
+.heightTeam {
+  height: 2em;
+}
+.imgTitle {
+  width: 250px;
 }
