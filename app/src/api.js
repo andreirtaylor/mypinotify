@@ -2,8 +2,9 @@ var pg = require('pg');
 
 module.exports = function(app){
     app.get('/api/events', getAllEvents)
-    app.get('/api/connect', connect)
+    app.post('/api/connect', connect)
     app.get('/api/token', token)
+    app.post('/api/newEvent', newEvent)
 }
 
 // Connect to the "bank" database.
@@ -19,8 +20,32 @@ var config = {
 //and set a limit of maximum 10 idle clients
 pool = new pg.Pool(config);
 
+function newEvent(req, res){
+  // to run a query we can acquire a client from the pool,
+  // run a query on the client, and then return the client to the pool
+  pool.connect(function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+    client.query('INSERT INTO events(message, device) VALUES($1, $2)', 
+      [req.body.pi_id, req.body.ultrasonic], function(err, result) {
+      //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+      done(err);
+
+      if(err) {
+        return console.error('error running query', err);
+      }
+      res.send(result.rows);
+    });
+  });
+  console.log(req.body.pi_id)
+  console.log()
+  console.log(req.body.touch)
+  //res.send("ok")
+}
+
 function token(req, res){
-      res.send(req.cookies.id_token);
+  res.send(req.cookies.id_token);
 }
 
 function connect(req, res){
@@ -30,7 +55,7 @@ function connect(req, res){
     if(err) {
       return console.error('error fetching client from pool', err);
     }
-    client.query('SELECT * FROM events', function(err, result) {
+    client.query('INSERT VALUES INTO ', function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       done(err);
 
