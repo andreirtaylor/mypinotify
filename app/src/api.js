@@ -61,6 +61,7 @@ function getmyevents(req, res) {
       return console.error('error fetching client from pool', err);
     }
 
+    //client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
     client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       if(err){
@@ -70,6 +71,13 @@ function getmyevents(req, res) {
       done(err);
 
       res.setHeader("content-type", "text/plain");
+
+      result.rows = result.rows.filter((val) => {
+        let data = JSON.parse(val.message)
+        if(data.touch != '0' || data.ultrasonic == '0.0'){
+          return true;
+        }
+      })
       console.log(result.rows)
       res.send(result.rows);
     });
