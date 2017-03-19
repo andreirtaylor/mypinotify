@@ -1,6 +1,8 @@
 var express = require('express')
 var app = express()
 
+require('./api.js')(app)
+
 app.get('/', function (req, res) {
   res.send('Hello World!')
 })
