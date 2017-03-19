@@ -17,14 +17,30 @@ import logo from '../../../public/logo.png';
 let userToken = null;
 
 class DeviceList extends React.Component {
+  state = {
+    devices: []
+  }
   componentDidMount() {
-    fetch('/api/getdevices', {
-      method: "get",
-    });
+    var xmlHttp = new XMLHttpRequest();
+    const timeout = setInterval(() => {
+      xmlHttp.onreadystatechange = () => { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          this.setState({ devices: xmlHttp.responseText.split(",") });
+          //push the file to the user
+        }
+      }
+      xmlHttp.open("GET", '/api/getdevices', true); // true for asynchronous 
+      xmlHttp.send(null); // send data HERE!
+    }, 1000);
   }
   render() {
     return (
-      <div> Hello </div>
+      <div> devices
+        <div> {this.state.devices.map((elem) => {
+          return (<div>{elem}</div>);
+        })}
+        </div>
+      </div>
     );
   }
 }
@@ -34,11 +50,14 @@ class EventList extends React.Component {
     eventList: [],
   }
   componentDidMount() {
-    setInterval(() => {
+    const timeout = setInterval(() => {
       console.log("TESTIN");
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = () => {
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            if (xmlHttp.responseText.indexOf("20") > -1) {
+              clearTimeout(timeout);
+            }
             this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
             //push the file to the user
           }

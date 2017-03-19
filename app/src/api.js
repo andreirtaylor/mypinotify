@@ -74,7 +74,7 @@ var assCount = 0;
 
 function getlatestevent(req, res) {
   res.send("ass" + assCount);
-  assCount += 1;
+  assCount += 1 % 20;
 }
 
 function getdevices(req, res) {
