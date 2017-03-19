@@ -17,6 +17,7 @@
 
 html {
   color: #222;
+  background-color: #c91e4a;
   font-weight: 100;
   font-size: 1em; /* ~16px; */
   font-family: var(--font-family-base);
@@ -25,6 +26,16 @@ html {
 
 a {
   color: #0074c2;
+}
+
+.logIn {
+  background: #c91e4a;
+  color: white;
+  border-color: white;
+  padding: 10px;
+  border-radius: 4px;
+  text-shadow: none;
+  margin: 10px;
 }
 
 /*

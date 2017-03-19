@@ -12,6 +12,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Layout.css';
 import Header from '../Header';
 import Footer from '../Footer';
+import logo from '../../../public/logo.png';
 
 let userToken = null;
 
@@ -36,17 +37,17 @@ class EventList extends React.Component {
     setInterval(() => {
       console.log("TESTIN");
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.onreadystatechange = () => { 
+      xmlHttp.onreadystatechange = () => {
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
             //push the file to the user
           }
       }
-      xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous 
+      xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
       xmlHttp.send(null); // send data HERE!
       // fetch('/api/getlatestevent', {
       //   method: "post",
-      //   body: userToken 
+      //   body: userToken
       // }).then(function(response) {
       //   this.setState({ eventList: this.state.eventList.concat([response]) }).bind(this);
       // });
@@ -81,13 +82,13 @@ class GenerateForm extends React.Component {
 class Layout extends React.Component {
   componentDidMount() {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = () => { 
+    xmlHttp.onreadystatechange = () => {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             userToken = xmlHttp.responseText;
             this.setState({isLoggedIn: xmlHttp.responseText !== ""});
         }
     }
-    xmlHttp.open("GET", '/api/token', true); // true for asynchronous 
+    xmlHttp.open("GET", '/api/token', true); // true for asynchronous
     xmlHttp.send(null);
   }
   state = {
@@ -100,13 +101,13 @@ class Layout extends React.Component {
   generateRaspbian = () => {
     this.setState({generating: true})
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = () => { 
+    xmlHttp.onreadystatechange = () => {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           this.setState({generating: false})
           //push the file to the user
         }
     }
-    xmlHttp.open("GET", '/generateimage', true); // true for asynchronous 
+    xmlHttp.open("GET", '/generateimage', true); // true for asynchronous
     xmlHttp.send(null); // send data HERE!
   }
 
@@ -128,7 +129,7 @@ class Layout extends React.Component {
             <DeviceList />
             <EventList />
           </div>
-        : <button onClick={this.logIn}> Login </button>
+        : <button className={s.logIn} onClick={this.logIn}> Login! </button>
           }
         <Footer />
       </div>
