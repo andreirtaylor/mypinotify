@@ -19,6 +19,36 @@ Currently the system runs two sensors, but the possibilities are endless. Sensor
 - Notifies you when something comes within 10 cm of it
 - Can accurately detect objects up to 1m from the sensor
 
+### Screenshots of the Application
+
+Home Page:
+
+![Home Page](img/HomePage.png)
+
+Team Page:
+
+![Team Page](img/TeamPage.png)
+
+Contact Page:
+
+![Contact Page](img/ContactPage.png)
+
+### Images of the hardware hack
+
+Pi Project:
+
+![Pi Project](img/piProject.jpg)
+
+![Pi Project](img/piProject2.jpg)
+
+Motion Sensor:
+
+![Motion Sensor](img/motionSensor.jpg)
+
+Touch Sensor:
+
+![Touch Sensor](img/touchSensor.jpg)
+
 ### Team
 * Andrei
 * Brynn
