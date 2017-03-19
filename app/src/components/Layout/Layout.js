@@ -45,6 +45,7 @@ class DeviceList extends React.Component {
             </tr>
           </thead>
           <tbody>
+          // TODO: For each device notifications loop through this body.
             <tr>
               <th>
                 Blah
