@@ -13,14 +13,15 @@ GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 ultrasonic = DistanceSensor(echo=17, trigger=4)
 
 while True:
-    print(ultrasonic.distance)
-    print("test")
-    dist = ultrasonic.distance
+    try:
+        dist = ultrasonic.distance
+    except:
+        dist = -1
     touch = GPIO.input(22)
     payload = {'pi_id': unique_id, 'ultrasonic': str(dist), 'touch': str(touch)}
     print(payload)
-    r = requests.post(url, json=payload)
-    print GPIO.input(22)
-    print(r.json)
-    print(r.status_code)
-    time.sleep(2)
+    try:
+        r = requests.post(url, json=payload)
+    except:
+        print("ERROR")
+    time.sleep(1)
