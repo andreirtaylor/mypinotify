@@ -51,18 +51,22 @@ class EventList extends React.Component {
   }
   componentDidMount() {
     const timeout = setInterval(() => {
-      console.log("TESTIN");
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = () => {
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             if (xmlHttp.responseText.indexOf("20") > -1) {
               clearTimeout(timeout);
             }
-            this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
+            console.log(xmlHttp.responseText);
+            //this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
             //push the file to the user
           }
       }
+<<<<<<< Updated upstream
       xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
+=======
+      xmlHttp.open("GET", '/api/getmyevents', true); // true for asynchronous 
+>>>>>>> Stashed changes
       xmlHttp.send(null); // send data HERE!
       // fetch('/api/getlatestevent', {
       //   method: "post",
@@ -86,12 +90,24 @@ class EventList extends React.Component {
 class GenerateForm extends React.Component {
   state = {
     generating: false,
+    username: "",
+    password: "",
+  }
+  generateRaspbian = () => {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = () => { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          //console.log(xmlHttp.responseText);
+        }
+    }
+    xmlHttp.open("POST", '/api/generateimage', true); // true for asynchronous 
+    xmlHttp.send(`user=${this.state.username}&pass=${this.state.password}`); // send data HERE!
   }
   render() {
     return (
       <div>
-        <textarea placeholder="SSID" />
-        <textarea placeholder="Password" />
+        <input value={this.state.username} placeholder="SSID" onChange={event => this.setState({ username: event.target.value })} />
+        <input value={this.state.password} placeholder="Password" onChange={event => this.setState({ password: event.target.value })} />
         <button onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
       </div>
     );
