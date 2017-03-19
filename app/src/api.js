@@ -32,7 +32,7 @@ function newEvent(req, res){
 
     // generate a hopefully new id yolo brolo
     client.query('INSERT INTO events(message, device) VALUES($2, $1)',
-      [req.body.pi_id, req.body.ultrasonic || req.body.touch], function(err, result) {
+      [req.body.pi_id, req.body], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       done(err);
 
