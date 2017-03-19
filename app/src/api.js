@@ -1,6 +1,12 @@
 var pg = require('pg');
 var sha1 = require('sha1');
 var str = require('string-to-stream');
+// Load the twilio module
+var twilio = require('twilio');
+
+// Create a new REST API client to make authenticated requests against the
+// twilio back end
+var twilioClient = new twilio.RestClient('ACd5bba28a6b016d7e9d62ab8adf88e7b7', 'f99c23ebf1986452719bb788090e8b03');
 
 module.exports = function(app){
   app.use((req, res, next) => {
@@ -49,12 +55,12 @@ function newEvent(req, res){
           client.query('INSERT INTO updates(message, device) VALUES($2, $1)',
             [req.body.pi_id, data] , function(err, result) {
               //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-                if(err) {
-                  return console.error('error running query', err);
-                }
-                done(err);
-                res.send(result.rows);
-          });
+              if(err) {
+                return console.error('error running query', err);
+              }
+              done(err);
+              res.send(result.rows);
+            });
         } else {
           if(err) {
             return console.error('error running query', err);
@@ -73,9 +79,6 @@ function isInteresting(data){
     return true;
   }
   return false;
-}
-
-function getmyevents(req, res) {
 }
 
 function getmyevents(req, res) {
@@ -107,6 +110,44 @@ function getmyevents(req, res) {
   });
 }
 var assCount = 0;
+
+function sendText(req){
+  client.query("SELECT phone, timeout FROM devices WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+    if(err){
+      console.error(err);
+      return;
+    }
+    done(err);
+
+    console.log(result)
+    // Pass in parameters to the REST API using an object literal notation. The
+    // REST client will handle authentication and response serialzation for you.
+    twilioClient.sms.messages.create({
+      to:'12508961067',
+      from:'17784003915',
+      body:'ahoy hoy! Testing Twilio and node.js'
+    }, function(error, message) {
+      // The HTTP request to Twilio will run asynchronously. This callback
+      // function will be called when a response is received from Twilio
+      // The "error" variable will contain error information, if any.
+      // If the request was successful, this value will be "falsy"
+      if (!error) {
+        // The second argument to the callback will contain the information
+        // sent back by Twilio for the request. In this case, it is the
+        // information about the text messsage you just sent:
+        console.log('Success! The SID for this SMS message is:');
+        console.log(message.sid);
+
+        console.log('Message sent on:');
+        console.log(message.dateCreated);
+      } else {
+        console.log('Oops! There was an error.' + JSON.stringify(error));
+      }
+    });
+
+  });
+};
 
 function getlatestevent(req, res) {
   pool.connect(function(err, client, done) {
