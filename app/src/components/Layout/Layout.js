@@ -33,11 +33,14 @@ class EventList extends React.Component {
     eventList: [],
   }
   componentDidMount() {
-    setInterval(() => {
+    const timeout = setInterval(() => {
       console.log("TESTIN");
       var xmlHttp = new XMLHttpRequest();
       xmlHttp.onreadystatechange = () => { 
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            if (xmlHttp.responseText.indexOf("20") > -1) {
+              clearTimeout(timeout);
+            }
             this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
             //push the file to the user
           }
