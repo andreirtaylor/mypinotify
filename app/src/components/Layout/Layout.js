@@ -18,8 +18,7 @@ let userToken = null;
 class DeviceList extends React.Component {
   componentDidMount() {
     fetch('/api/getdevices', {
-      method: "post",
-      body: userToken 
+      method: "get"
     })
   }
   render() {
