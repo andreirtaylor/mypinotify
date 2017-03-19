@@ -39,18 +39,28 @@ class DeviceList extends React.Component {
         <table>
           <thead>
             <tr>
+              <th>Integration</th>
+              <th>Device</th>
               <th>Name</th>
-              <th>Price</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <tr>
+              <th>
+                Blah
+              </th>
+              <th>
+                <div> {this.state.devices.map((elem) => {
+                  return (<div>{elem}</div>);
+                })}
+                </div>
+              </th>
+              <th>
+                Blah
+              </th>
+            </tr>
+          </tbody>
         </table>
-
-      devices
-        <div> {this.state.devices.map((elem) => {
-          return (<div>{elem}</div>);
-        })}
-        </div>
       </div>
     );
   }
