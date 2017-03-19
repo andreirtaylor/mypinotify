@@ -16,11 +16,13 @@ import Footer from '../Footer';
 class Layout extends React.Component {
   componentDidMount() {
     var xmlHttp = new XMLHttpRequest();
+    const that = this;
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            this.setState({isLoggedIn: xmlHttp.responseText !== ""});
+            console.log(xmlHttp.responseText)
+            that.setState({isLoggedIn: xmlHttp.responseText !== ""});
     }
-    xmlHttp.open("GET", window.location.host + '/api/token', true); // true for asynchronous 
+    xmlHttp.open("GET", '/api/token', true); // true for asynchronous 
     xmlHttp.send(null);
   }
   state = {
