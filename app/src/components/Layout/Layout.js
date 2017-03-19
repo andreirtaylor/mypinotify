@@ -14,6 +14,18 @@ import Header from '../Header';
 import Footer from '../Footer';
 
 class Layout extends React.Component {
+  componentDidMount() {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            this.setState({isLoggedIn: xmlHttp.responseText !== ""});
+    }
+    xmlHttp.open("GET", window.location.host + '/token', true); // true for asynchronous 
+    xmlHttp.send(null);
+  }
+  state = {
+    isLoggedIn: false
+  }
   static propTypes = {
     children: PropTypes.node.isRequired,
   };
@@ -27,11 +39,10 @@ class Layout extends React.Component {
   }
 
   render() {
-    const isLoggedIn = false;
     return (
       <div>
         <Header />
-        {isLoggedIn ? 
+        {this.state.isLoggedIn ? 
         <button onClick={this.logOut}> Logout </button>
         : <button onClick={this.logIn}> Login </button> }
         <Footer />
