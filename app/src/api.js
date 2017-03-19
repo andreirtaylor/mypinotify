@@ -30,9 +30,11 @@ function newEvent(req, res){
       return console.error('error fetching client from pool', err);
     }
 
+    var data = { ultrasonic: req.body.ultrasonic, touch: req.body.touch};
+    console.log(""+JSON.stringify(data));
     // generate a hopefully new id yolo brolo
     client.query('INSERT INTO events(message, device) VALUES($2, $1)',
-      [req.body.pi_id, req.body], function(err, result) {
+      [req.body.pi_id, data] , function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       done(err);
 
