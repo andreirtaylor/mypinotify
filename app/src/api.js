@@ -3,14 +3,19 @@ var sha1 = require('sha1');
 var str = require('string-to-stream');
 
 module.exports = function(app){
-    app.get('/api/events', getAllEvents)
-    app.get('/api/connect', connect)
-    app.get('/api/token', token)
-    app.post('/api/newEvent', newEvent)
-    app.get('/api/generateimage', generateImage)
-    app.get('/api/getdevices', getdevices)
-    app.get('/api/getmyevents', getmyevents)
-    app.get('/api/getlatestevent', getlatestevent)
+  app.use((req, res, next) => {
+    req.cookies.id_token = req.cookies.id_token && req.cookies.id_token.split('.')[0];
+    next();
+  })
+
+  app.get('/api/events', getAllEvents)
+  app.get('/api/connect', connect)
+  app.get('/api/token', token)
+  app.post('/api/newEvent', newEvent)
+  app.get('/api/generateimage', generateImage)
+  app.get('/api/getdevices', getdevices)
+  app.get('/api/getmyevents', getmyevents)
+  app.get('/api/getlatestevent', getlatestevent)
 }
 
 // Connect to the "bank" database.
@@ -39,14 +44,14 @@ function newEvent(req, res){
     // generate a hopefully new id yolo brolo
     client.query('INSERT INTO events(message, device) VALUES($2, $1)',
       [req.body.pi_id, data] , function(err, result) {
-      //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-      done(err);
+        //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+        done(err);
 
-      if(err) {
-        return console.error('error running query', err);
-      }
-      res.send(result.rows);
-    });
+        if(err) {
+          return console.error('error running query', err);
+        }
+        res.send(result.rows);
+      });
   });
 }
 
@@ -56,6 +61,7 @@ function getmyevents(req, res) {
       return console.error('error fetching client from pool', err);
     }
 
+    //client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
     client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       if(err){
@@ -65,6 +71,13 @@ function getmyevents(req, res) {
       done(err);
 
       res.setHeader("content-type", "text/plain");
+
+      result.rows = result.rows.filter((val) => {
+        let data = JSON.parse(val.message)
+        if(data.touch != '0' || data.ultrasonic == '0.0'){
+          return true;
+        }
+      })
       console.log(result.rows)
       res.send(result.rows);
     });
@@ -121,15 +134,15 @@ function connect(req, res){
     ///console.log(device);
     client.query('INSERT INTO devices(device, userToken) VALUES($1, $2)',
       [device, req.cookies.id_token], function(err, result) {
-      //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-      if(err){
-        console.error(err);
-      }
-      done(err);
+        //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+        if(err){
+          console.error(err);
+        }
+        done(err);
 
-      res.setHeader("content-type", "text/plain");
-      str(device).pipe(res);
-    });
+        res.setHeader("content-type", "text/plain");
+        str(device).pipe(res);
+      });
   });
 
   pool.on('error', function (err, client) {
