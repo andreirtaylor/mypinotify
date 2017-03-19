@@ -63,7 +63,7 @@ class EventList extends React.Component {
           }
       }
       //xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
-      xmlHttp.open("GET", '/api/getmyevents'); // true for asynchronous 
+      xmlHttp.open("GET", '/api/getmyevents'); // true for asynchronous
       xmlHttp.send(null); // send data HERE!
       // fetch('/api/getlatestevent', {
       //   method: "post",
@@ -92,20 +92,20 @@ class GenerateForm extends React.Component {
   }
   generateRaspbian = () => {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = () => { 
+    xmlHttp.onreadystatechange = () => {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           //console.log(xmlHttp.responseText);
         }
     }
-    xmlHttp.open("POST", '/api/generateimage', true); // true for asynchronous 
+    xmlHttp.open("POST", '/api/generateimage', true); // true for asynchronous
     xmlHttp.send(`user=${this.state.username}&pass=${this.state.password}`); // send data HERE!
   }
   render() {
     return (
-      <div>
-        <input value={this.state.username} placeholder="SSID" onChange={event => this.setState({ username: event.target.value })} />
-        <input value={this.state.password} placeholder="Password" onChange={event => this.setState({ password: event.target.value })} />
-        <button onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
+      <div className={s.inputContainer}>
+        <input className={s.input} value={this.state.username} placeholder="SSID" onChange={event => this.setState({ username: event.target.value })} />
+        <input className={s.input} value={this.state.password} placeholder="Password" onChange={event => this.setState({ password: event.target.value })} />
+        <button className={s.logIn} onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
       </div>
     );
   }

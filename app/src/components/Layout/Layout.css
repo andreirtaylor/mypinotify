@@ -51,6 +51,10 @@ a {
   padding: 100px;
   height: 300px;
 }
+.inputContainer {
+  margin: 0 auto;
+  text-align: center;
+}
 .imgLogo {
   width: 250px;
 }
@@ -61,6 +65,12 @@ a {
 }
 .padding {
   padding: 20px;
+}
+.input {
+  padding: 14px;
+  margin: 8px;
+  border-radius: 4px;
+  color: #c91e4a;
 }
 /*
  * Remove text-shadow in selection highlight:
