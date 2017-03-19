@@ -114,16 +114,16 @@ function getlatestevent(req, res) {
       return console.error('error fetching client from pool', err);
     }
 
-    //client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
-    client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+    client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
+    //client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       let ret = result.rows;
       if(err){
         console.error(err);
         return;
       }
-      //client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
-      client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+      client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
+      //client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
         //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
         if(err){
           console.error(err);
@@ -133,12 +133,12 @@ function getlatestevent(req, res) {
 
         res.setHeader("content-type", "text/plain");
 
-        let formatted = ret.map((val) =>{
-          let data = JSON.parse(val.message)
-          return data.ultrasonic + "  " + data.touch;
-        })
-        console.log(formatted);
-        res.send(formatted);
+        // let formatted = ret.map((val) =>{
+        //   let data = JSON.parse(val.message)
+        //   return data.ultrasonic + "  " + data.touch;
+        // })
+        // console.log(formatted);
+        res.send(ret);
       });
     });
   });
