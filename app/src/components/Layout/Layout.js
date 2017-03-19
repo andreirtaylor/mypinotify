@@ -13,26 +13,90 @@ import s from './Layout.css';
 import Header from '../Header';
 import Footer from '../Footer';
 
+let userToken = null;
+
+class DeviceList extends React.Component {
+  componentDidMount() {
+    fetch('/api/getdevices', {
+      method: "get",
+    });
+  }
+  render() {
+    return (
+      <div> Hello </div>
+    );
+  }
+}
+
+class EventList extends React.Component {
+  state = {
+    eventList: [],
+  }
+  componentDidMount() {
+    setInterval(function() {
+      fetch('/api/getlatestevent', {
+        method: "post",
+        body: userToken 
+      }).then(function(response) {
+        this.setState({ eventList: this.state.eventList.concat([response]) });
+      });
+    }, 1000);
+  }
+  render() {
+    return (
+      <div>
+        {this.state.map((elem) => {
+          return (<div>{elem}</div>);
+        })}
+      </div>
+    );
+  }
+}
+
+class GenerateForm extends React.Component {
+  state = {
+    generating: false,
+  }
+  render() {
+    return (
+      <div>
+        <textarea placeholder="SSID" />
+        <textarea placeholder="Password"/>
+        <button onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
+      </div>
+    );
+  }
+}
+
 class Layout extends React.Component {
   componentDidMount() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = () => { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            userToken = xmlHttp.responseText;
             this.setState({isLoggedIn: xmlHttp.responseText !== ""});
     }
     xmlHttp.open("GET", '/api/token', true); // true for asynchronous 
     xmlHttp.send(null);
   }
   state = {
-    isLoggedIn: false,
-    generating: false,
+    isLoggedIn: false
   }
   static propTypes = {
     children: PropTypes.node.isRequired,
   };
 
   generateRaspbian = () => {
-    console.log("NOT IMPLEMENTED");
+    this.setState({generating: true})
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = () => { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+          this.setState({generating: false})
+          //push the file to the user
+        }
+    }
+    xmlHttp.open("GET", '/generateimage', true); // true for asynchronous 
+    xmlHttp.send(null); // send data HERE!
   }
 
   logIn = () => {
@@ -47,14 +111,13 @@ class Layout extends React.Component {
     return (
       <div>
         <Header />
-        {this.state.isLoggedIn ? 
-        <div>
-          <textarea placeholder="SSID" />
-          <textarea placeholder="Password"/>
-          <button onClick={this.logOut}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
-        </div>
-        : 
-          <button onClick={this.logIn}> Login </button>  
+        {this.state.isLoggedIn ?
+          <div>
+            <GenerateForm />
+            <DeviceList />
+            <EventList />
+          </div>
+        : <button onClick={this.logIn}> Login </button>
           }
         <Footer />
       </div>
