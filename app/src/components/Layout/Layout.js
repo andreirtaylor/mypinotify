@@ -24,17 +24,22 @@ class Layout extends React.Component {
     xmlHttp.send(null);
   }
   state = {
-    isLoggedIn: false
+    isLoggedIn: false,
+    generating: false,
   }
   static propTypes = {
     children: PropTypes.node.isRequired,
   };
 
-  logOut = () => {
+  generateRaspbian = () => {
     console.log("NOT IMPLEMENTED");
   }
 
   logIn = () => {
+    if (window.location.host.indexOf("localhost") > -1) {
+      this.setState({isLoggedIn: true});
+      return;
+    }
     window.location.href = '/login/facebook';
   }
 
@@ -43,8 +48,14 @@ class Layout extends React.Component {
       <div>
         <Header />
         {this.state.isLoggedIn ? 
-        <button onClick={this.logOut}> Logout </button>
-        : <button onClick={this.logIn}> Login </button> }
+        <div>
+          <textarea placeholder="SSID" />
+          <textarea placeholder="Password"/>
+          <button onClick={this.logOut}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
+        </div>
+        : 
+          <button onClick={this.logIn}> Login </button>  
+          }
         <Footer />
       </div>
     );
