@@ -4,7 +4,7 @@
 
 Landing Page: http://www.MyPiNotify.me
 
-Application: http://www.app.MyPiNotify.me
+Application: http://app.MyPiNotify.me
 
 ### Team
 * Andrei
