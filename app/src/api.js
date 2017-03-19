@@ -1,6 +1,9 @@
 var pg = require('pg');
 var sha1 = require('sha1');
 var str = require('string-to-stream');
+var fs = require('fs');
+var exec = require('child_process').exec;
+
 
 module.exports = function(app){
   app.use((req, res, next) => {
@@ -166,10 +169,15 @@ function getdevices(req, res) {
 }
 
 function generateImage(req, res) {
-  console.log("generate image");
-  console.log(req.body);
-  console.log(req.body.ssid);
-  res.send("respon");
+  fs.writeFile('/mnt/raspbianboot/etc/wpa_supplicant/wpa_supplicant.conf', 'ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\nupdate_config=1\n\nnetwork={\n\tssid="' + req.body.ssid + '"\n\tpsk="' + req.body.pass + '"\n}', function(err) {
+    if (err) return console.log(err);
+  });
+  // Zip img file into public
+  // zip.file('test.file', 'hello there');
+  // var data = zip.generate({base64:false,compression:'DEFLATE'});
+  // console.log(data); // ugly data
+  // send route back to user
+  res.send("/baserasp.img");
 }
 
 function token(req, res){

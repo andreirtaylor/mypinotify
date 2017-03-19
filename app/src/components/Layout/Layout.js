@@ -82,10 +82,12 @@ class GenerateForm extends React.Component {
     password: "",
   }
   generateRaspbian = () => {
+    this.setState({ generating: true });
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = () => {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-          //console.log(xmlHttp.responseText);
+          this.setState({ generating: false });
+          window.location.href = xmlHttp.responseText;
         }
     }
     xmlHttp.open("POST", '/api/generateimage', true); // true for asynchronous
