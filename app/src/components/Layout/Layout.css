@@ -36,8 +36,30 @@ a {
   border-radius: 4px;
   text-shadow: none;
   margin: 10px;
+  font-size: 1.5em;
 }
-
+.logIn:hover {
+  background: white;
+  color: #c91e4a;
+  border-color: white;
+}
+.buttonContainer {
+  margin: 0 auto;
+  text-align: center;
+  padding: 100px;
+  height: 300px;
+}
+.imgLogo {
+  width: 250px;
+}
+.slangSpan {
+  color: white;
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+.padding {
+  padding: 20px;
+}
 /*
  * Remove text-shadow in selection highlight:
  * https://twitter.com/miketaylr/status/12228805301

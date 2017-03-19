@@ -15,7 +15,7 @@ class Footer extends React.Component {
   render() {
     return (
       <div className={s.root}>
-        Footer
+        Copyright © MyPiNotify 2017
       </div>
     );
   }

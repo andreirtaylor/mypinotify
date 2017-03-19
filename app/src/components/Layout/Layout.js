@@ -12,7 +12,7 @@ import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Layout.css';
 import Header from '../Header';
 import Footer from '../Footer';
-import logo from '../../../public/logo.png';
+import logo from '../../../public/fullLogoWhite.png';
 
 let userToken = null;
 
@@ -23,13 +23,13 @@ class DeviceList extends React.Component {
   componentDidMount() {
     var xmlHttp = new XMLHttpRequest();
     const timeout = setInterval(() => {
-      xmlHttp.onreadystatechange = () => { 
+      xmlHttp.onreadystatechange = () => {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
           this.setState({ devices: xmlHttp.responseText.split(",") });
           //push the file to the user
         }
       }
-      xmlHttp.open("GET", '/api/getdevices', true); // true for asynchronous 
+      xmlHttp.open("GET", '/api/getdevices', true); // true for asynchronous
       xmlHttp.send(null); // send data HERE!
     }, 1000);
   }
@@ -148,7 +148,17 @@ class Layout extends React.Component {
             <DeviceList />
             <EventList />
           </div>
-        : <button className={s.logIn} onClick={this.logIn}> Login! </button>
+        : <div className={s.buttonContainer}>
+            <div className={s.padding}>
+              <img className={s.imgLogo} src={logo}/>
+            </div>
+            <div className={s.padding}>
+              <span className={s.slangSpan}>An IoT notifications platform.</span>
+            </div>
+            <div className={s.padding}>
+              <button className={s.logIn} onClick={this.logIn}> Login! </button>
+            </div>
+          </div>
           }
         <Footer />
       </div>
