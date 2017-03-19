@@ -1,6 +1,6 @@
 # MyPiNotify
 
-## App that sends notifications through sensors.
+## An IoT notifications platform.
 
 Landing Page: http://www.MyPiNotify.me
 
@@ -8,7 +8,7 @@ Application: http://app.MyPiNotify.me
 
 ### Team
 * Andrei
-* Jake
 * Brynn
-* Jordan
 * Dominique
+* Jake
+* Jordan
