@@ -40,19 +40,42 @@ function newEvent(req, res){
     }
 
     var data = { ultrasonic: req.body.ultrasonic, touch: req.body.touch};
-    console.log(""+JSON.stringify(data));
+    console.log(JSON.stringify(data));
     // generate a hopefully new id yolo brolo
     client.query('INSERT INTO events(message, device) VALUES($2, $1)',
       [req.body.pi_id, data] , function(err, result) {
         //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-        done(err);
+        if(isInteresting(data)){
+          client.query('INSERT INTO updates(message, device) VALUES($2, $1)',
+            [req.body.pi_id, data] , function(err, result) {
+              //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+                if(err) {
+                  return console.error('error running query', err);
+                }
+                done(err);
+                res.send(result.rows);
+          });
+        } else {
+          if(err) {
+            return console.error('error running query', err);
+          }
+          //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+          done(err);
 
-        if(err) {
-          return console.error('error running query', err);
+          res.send(result.rows);
         }
-        res.send(result.rows);
       });
   });
+}
+
+function isInteresting(data){
+  if (data.touch != '0' || data.ultrasonic == '0.0'){
+    return true;
+  }
+  return false;
+}
+
+function getmyevents(req, res) {
 }
 
 function getmyevents(req, res) {
@@ -61,8 +84,8 @@ function getmyevents(req, res) {
       return console.error('error fetching client from pool', err);
     }
 
-    client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
-    //client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+    //client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
+    client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
       //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
       if(err){
         console.error(err);
@@ -74,7 +97,7 @@ function getmyevents(req, res) {
 
       result.rows = result.rows.filter((val) => {
         let data = JSON.parse(val.message)
-        if(data.touch != '0' || data.ultrasonic == '0.0'){
+        if(isInteresting(data)){
           return true;
         }
       })
@@ -86,8 +109,39 @@ function getmyevents(req, res) {
 var assCount = 0;
 
 function getlatestevent(req, res) {
-  res.send("ass" + assCount);
-  assCount += 1 % 20;
+  pool.connect(function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+
+    //client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
+    client.query("SELECT * FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+      //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+      let ret = result.rows;
+      if(err){
+        console.error(err);
+        return;
+      }
+      //client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", ["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"], function(err, result) {
+      client.query("DELETE FROM updates WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+        //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+        if(err){
+          console.error(err);
+          return;
+        }
+        done(err);
+
+        res.setHeader("content-type", "text/plain");
+
+        let formatted = ret.map((val) =>{
+          let data = JSON.parse(val.message)
+          return data.ultrasonic + "  " + data.touch;
+        })
+        console.log(formatted);
+        res.send(formatted);
+      });
+    });
+  });
 }
 
 function getdevices(req, res) {
@@ -105,7 +159,7 @@ function getdevices(req, res) {
       done(err);
 
       res.setHeader("content-type", "text/plain");
-      console.log(result.rows)
+      //console.log(result.rows)
       res.send(result.rows);
     });
   });

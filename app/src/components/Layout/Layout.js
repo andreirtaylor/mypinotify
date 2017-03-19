@@ -47,7 +47,7 @@ class DeviceList extends React.Component {
 
 class EventList extends React.Component {
   state = {
-    eventList: [],
+    eventList: ["poop"],
   }
   componentDidMount() {
     const timeout = setInterval(() => {
@@ -58,12 +58,12 @@ class EventList extends React.Component {
               clearTimeout(timeout);
             }
             console.log(xmlHttp.responseText);
-            this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
+            //this.setState({ eventList: [...JSON.parse(xmlHttp.responseText)].concat(this.state.eventList) });
             //push the file to the user
           }
       }
-      //xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
-      xmlHttp.open("GET", '/api/getmyevents'); // true for asynchronous
+      xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
+      //xmlHttp.open("GET", '/api/getmyevents'); // true for asynchronous
       xmlHttp.send(null); // send data HERE!
       // fetch('/api/getlatestevent', {
       //   method: "post",
