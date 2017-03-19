@@ -1,18 +1,13 @@
 var pg = require('pg');
 var sha1 = require('sha1');
 var str = require('string-to-stream');
-<<<<<<< HEAD
 var fs = require('fs');
-var exec = require('child_process').exec;
-
-=======
 // Load the twilio module
 var twilio = require('twilio');
 
 // Create a new REST API client to make authenticated requests against the
 // twilio back end
 var twilioClient = new twilio.RestClient('ACd5bba28a6b016d7e9d62ab8adf88e7b7', 'f99c23ebf1986452719bb788090e8b03');
->>>>>>> 9372c551890fd4b5c2d285f96e413367a7795a77
 
 module.exports = function(app){
   app.use((req, res, next) => {
