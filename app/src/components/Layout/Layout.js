@@ -20,7 +20,7 @@ class Layout extends React.Component {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             this.setState({isLoggedIn: xmlHttp.responseText !== ""});
     }
-    xmlHttp.open("GET", window.location.host + '/token', true); // true for asynchronous 
+    xmlHttp.open("GET", window.location.host + '/api/token', true); // true for asynchronous 
     xmlHttp.send(null);
   }
   state = {
