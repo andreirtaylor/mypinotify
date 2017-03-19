@@ -35,7 +35,18 @@ class DeviceList extends React.Component {
   }
   render() {
     return (
-      <div> devices
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+      devices
         <div> {this.state.devices.map((elem) => {
           return (<div>{elem}</div>);
         })}
