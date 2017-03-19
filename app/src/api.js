@@ -48,7 +48,7 @@ function newEvent(req, res){
 
 function token(req, res){
   res.send(req.cookies.id_token);
-}
+
 
 function connect(req, res){
   // to run a query we can acquire a client from the pool,
@@ -58,9 +58,6 @@ function connect(req, res){
       return console.error('error fetching client from pool', err);
     }
 
-    if(req.cookies.id_token) {
-      return console.error('error fetching client from pool', err);
-    }
     var device = sha1((new Date()).toString());
     ///console.log(device);
     client.query('INSERT INTO devices(device, userToken) VALUES($1, $2)',
