@@ -16,12 +16,12 @@ import Footer from '../Footer';
 let userToken = null;
 
 class DeviceList extends React.Component {
-  // componentDidMount() {
-  //   fetch(window.location.host + '/api/getdevices', {
-  //     method: "post",
-  //     body: userToken 
-  //   })
-  // }
+  componentDidMount() {
+    fetch('/api/getdevices', {
+      method: "post",
+      body: userToken 
+    })
+  }
   render() {
     return (
       <div> Hello </div>

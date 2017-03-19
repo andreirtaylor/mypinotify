@@ -8,7 +8,7 @@ module.exports = function(app){
     app.get('/api/token', token)
     app.post('/api/newEvent', newEvent)
     app.get('/api/generateimage', generateImage)
-    app.get('/api/getdevices', getdevices)
+    app.post('/api/getdevices', getdevices)
 }
 
 // Connect to the "bank" database.
