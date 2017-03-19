@@ -9,6 +9,7 @@ module.exports = function(app){
     app.post('/api/newEvent', newEvent)
     app.get('/api/generateimage', generateImage)
     app.get('/api/getdevices', getdevices)
+    app.get('/api/getmyevents', getmyevents)
 }
 
 // Connect to the "bank" database.
@@ -43,6 +44,27 @@ function newEvent(req, res){
       if(err) {
         return console.error('error running query', err);
       }
+      res.send(result.rows);
+    });
+  });
+}
+
+function getmyevents(req, res) {
+  pool.connect(function(err, client, done) {
+    if(err) {
+      return console.error('error fetching client from pool', err);
+    }
+
+    client.query("SELECT * FROM events WHERE device IN (SELECT device FROM devices WHERE userToken = $1)", [req.cookies.id_token], function(err, result) {
+      //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+      if(err){
+        console.error(err);
+        return;
+      }
+      done(err);
+
+      res.setHeader("content-type", "text/plain");
+      console.log(result.rows)
       res.send(result.rows);
     });
   });
