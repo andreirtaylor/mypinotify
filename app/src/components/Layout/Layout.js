@@ -33,19 +33,29 @@ class EventList extends React.Component {
     eventList: [],
   }
   componentDidMount() {
-    setInterval(function() {
-      fetch('/api/getlatestevent', {
-        method: "post",
-        body: userToken 
-      }).then(function(response) {
-        this.setState({ eventList: this.state.eventList.concat([response]) });
-      });
+    setInterval(() => {
+      console.log("TESTIN");
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.onreadystatechange = () => { 
+          if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
+            //push the file to the user
+          }
+      }
+      xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous 
+      xmlHttp.send(null); // send data HERE!
+      // fetch('/api/getlatestevent', {
+      //   method: "post",
+      //   body: userToken 
+      // }).then(function(response) {
+      //   this.setState({ eventList: this.state.eventList.concat([response]) }).bind(this);
+      // });
     }, 1000);
   }
   render() {
     return (
       <div>
-        {this.state.map((elem) => {
+        {this.state.eventList.map((elem) => {
           return (<div>{elem}</div>);
         })}
       </div>
@@ -61,7 +71,7 @@ class GenerateForm extends React.Component {
     return (
       <div>
         <textarea placeholder="SSID" />
-        <textarea placeholder="Password"/>
+        <textarea placeholder="Password" />
         <button onClick={this.generateRaspbian}> {this.state.generating ? "<Loading>" : "Generate Raspbian Image"}</button>
       </div>
     );
@@ -72,9 +82,10 @@ class Layout extends React.Component {
   componentDidMount() {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = () => { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             userToken = xmlHttp.responseText;
             this.setState({isLoggedIn: xmlHttp.responseText !== ""});
+        }
     }
     xmlHttp.open("GET", '/api/token', true); // true for asynchronous 
     xmlHttp.send(null);
