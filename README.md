@@ -7,7 +7,7 @@ Landing Page: http://www.MyPiNotify.me
 Application: http://app.MyPiNotify.me
 
 ## Description
-MyPiNotify is a painless notification system for RasberryPi IOT devices. Installation consists of entering your wifi credentials into our app, then MyPiNotify does the hard work, it creates a custom Rasberry Pi Image for you with networking enabled. Flash this onto your PI and you are good to go.
+MyPiNotify is a painless notification system for RasberryPi IoT devices. Installation consists of entering your wifi credentials into our app, then MyPiNotify does the hard work, it creates a custom Rasberry Pi Image for you with networking enabled. Flash this onto your PI and you are good to go.
 
 Pi Project:
 
