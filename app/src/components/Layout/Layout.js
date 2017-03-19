@@ -58,21 +58,18 @@ class EventList extends React.Component {
               clearTimeout(timeout);
             }
             console.log(xmlHttp.responseText);
-            //this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
+            this.setState({ eventList: [xmlHttp.responseText].concat(this.state.eventList) });
             //push the file to the user
           }
       }
-<<<<<<< Updated upstream
-      xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
-=======
-      xmlHttp.open("GET", '/api/getmyevents', true); // true for asynchronous 
->>>>>>> Stashed changes
+      //xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
+      xmlHttp.open("GET", '/api/getmyevents'); // true for asynchronous 
       xmlHttp.send(null); // send data HERE!
       // fetch('/api/getlatestevent', {
       //   method: "post",
       //   body: userToken
       // }).then(function(response) {
-      //   this.setState({ eventList: this.state.eventList.concat([response]) }).bind(this);
+      //this.setState({ eventList: this.state.eventList.concat([response]) }).bind(this);
       // });
     }, 1000);
   }
