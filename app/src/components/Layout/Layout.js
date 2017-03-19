@@ -47,21 +47,22 @@ class DeviceList extends React.Component {
 
 class EventList extends React.Component {
   state = {
-    eventList: ["poop"],
+    eventList: [],
   }
   componentDidMount() {
-    const timeout = setInterval(() => {
+    const timeout = setInterval(function () {
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.onreadystatechange = () => {
+      xmlHttp.onreadystatechange = function () {
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-            if (xmlHttp.responseText.indexOf("20") > -1) {
-              clearTimeout(timeout);
+            const result = JSON.parse(xmlHttp.responseText);
+            if (result.length > 0) {
+              this.setState({ eventList: result.concat(this.state.eventList) });
             }
             console.log(xmlHttp.responseText);
             //this.setState({ eventList: [...JSON.parse(xmlHttp.responseText)].concat(this.state.eventList) });
             //push the file to the user
           }
-      }
+      }.bind(this);
       xmlHttp.open("GET", '/api/getlatestevent', true); // true for asynchronous
       //xmlHttp.open("GET", '/api/getmyevents'); // true for asynchronous
       xmlHttp.send(null); // send data HERE!
@@ -71,13 +72,13 @@ class EventList extends React.Component {
       // }).then(function(response) {
       //this.setState({ eventList: this.state.eventList.concat([response]) }).bind(this);
       // });
-    }, 1000);
+    }.bind(this), 1000);
   }
   render() {
     return (
       <div>
         {this.state.eventList.map((elem) => {
-          return (<div>{elem}</div>);
+          return (<div>{elem.message}</div>);
         })}
       </div>
     );
