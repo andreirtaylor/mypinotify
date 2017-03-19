@@ -35,11 +35,7 @@ class DeviceList extends React.Component {
   }
   render() {
     return (
-      <div> devices
-        <div> {this.state.devices.map((elem, index) => {
-          return (<div key={index}>{elem}</div>);
-        })}
-        </div>
+      <div>
       </div>
     );
   }
@@ -67,9 +63,28 @@ class EventList extends React.Component {
   render() {
     return (
       <div>
-        {this.state.eventList.map((elem, index) => {
-          return (<div key={index}>{elem.message}</div>);
-        })}
+      <table>
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>Messages</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              {this.state.eventList.map((elem, index) => {
+                return (<div key={index}>{elem.device}</div>);
+              })}
+            </td>
+            <td>
+              {this.state.eventList.map((elem, index) => {
+                return (<div key={index}>{elem.message}</div>);
+              })}
+            </td>
+          </tr>
+        </tbody>
+      </table>
       </div>
     );
   }
